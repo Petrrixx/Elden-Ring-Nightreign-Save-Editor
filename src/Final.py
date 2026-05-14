@@ -656,6 +656,8 @@ class ColorTheme:
             return ("Helvetica", 10, "bold")
         else:  # Linux and others
             return ("DejaVu Sans", 10, "bold")
+
+    def _setup_palettes(self) -> None:
         """
         Defines the complete color palette including base backgrounds
         and semantic component colors for Light and Dark modes.
