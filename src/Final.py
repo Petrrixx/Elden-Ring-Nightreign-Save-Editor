@@ -20,6 +20,7 @@ TODO:
 import inspect
 import logging
 import os
+import platform
 import re
 import struct
 import sys
@@ -646,7 +647,15 @@ class ColorTheme:
         self._setup_palettes()
         self._initialized = True
 
-    def _setup_palettes(self) -> None:
+    def _get_heading_font(self) -> tuple:
+        """Get platform-appropriate heading font with fallback."""
+        system = platform.system()
+        if system == "Windows":
+            return ("Microsoft JhengHei", 10, "bold")
+        elif system == "Darwin":  # macOS
+            return ("Helvetica", 10, "bold")
+        else:  # Linux and others
+            return ("DejaVu Sans", 10, "bold")
         """
         Defines the complete color palette including base backgrounds
         and semantic component colors for Light and Dark modes.
@@ -874,7 +883,7 @@ class ColorTheme:
             background=base["btn_bg"],
             foreground=base["text_main"],
             relief="flat",
-            font=("Microsoft JhengHei", 10, "bold"),
+            font=self._get_heading_font(),
         )
         self._style.configure(
             "TCheckbutton", background=base["card_bg"], foreground=base["text_main"]
