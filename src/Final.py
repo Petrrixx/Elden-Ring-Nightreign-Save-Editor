@@ -658,6 +658,8 @@ class ColorTheme:
             return ("DejaVu Sans", 10, "bold")
 
     def _setup_palettes(self) -> None:
+
+    def _setup_palettes(self) -> None:
         """
         Defines the complete color palette including base backgrounds
         and semantic component colors for Light and Dark modes.
