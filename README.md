@@ -61,26 +61,48 @@ To **avoid violation detection**, the system will not auto-generate **Unique Rel
 
 ### PC (Steam / Seamless Co-op)
 
+#### Windows
 1. Locate your save file:
    ```text
    C:\Users\%YourUsername%\AppData\Roaming\Nightreign\<User-ID>\
    NR0000.sl2
-    ```
-2.  If using Seamless Co-op, ensure the save file name is NR0000.sl2.
-3.  Open the save file using the editor.
-4.  Edit the data as desired.
-5.  Save the changes and replace the original file.
+   ```
+2. If using Seamless Co-op, ensure the save file name is NR0000.sl2.
+3. Open the save file using the editor.
+4. Edit the data as desired.
+5. Save the changes and replace the original file.
+
+#### macOS
+1. Locate your save file:
+   ```bash
+   ~/Library/Application Support/Nightreign/<User-ID>/
+   NR0000.sl2
+   ```
+2. If using Seamless Co-op, ensure the save file name is NR0000.sl2.
+3. Open the save file using the editor.
+4. Edit the data as desired.
+5. Save the changes and replace the original file.
+
+#### Linux
+1. Locate your save file (check both common locations):
+   ```bash
+   ~/.config/Nightreign/<User-ID>/
+   # or
+   ~/.local/share/Nightreign/<User-ID>/
+   ```
+   or follow Proton prefix path if using Proton
+2. If using Seamless Co-op, ensure the save file name is NR0000.sl2.
+3. Open the save file using the editor.
+4. Edit the data as desired.
+5. Save the changes and replace the original file.
 
 ### PS4/PS5 (PS4 Version)
-1.  Decrypt your save file
-      (see the YouTube decryption guide).
-2.  Open memory.dat with the editor.
-
-3.  Edit and save your changes.
-
-4.  Re-encrypt the modified data.
-
-5.  Transfer the save back to your console.
+1. Decrypt your save file
+   (see the YouTube decryption guide).
+2. Open memory.dat with the editor.
+3. Edit and save your changes.
+4. Re-encrypt the modified data.
+5. Transfer the save back to your console.
 
 
 
@@ -95,6 +117,11 @@ You can download the latest builds from the releases page:
 ---
 
 ## 🧩 Requirements
+
+### Platform Support
+- **Windows** - Fully supported
+- **macOS** - Fully supported (Intel & Apple Silicon)
+- **Linux** - Fully supported (any distribution with Python 3.12+)
 
 ### Python
 - **Python 3.12 or newer**
