@@ -1,0 +1,142 @@
+name: Build Release Binaries
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+      
+      - name: Install dependencies
+        run: |
+          pip install uv
+          uv pip install -e .
+      
+      - name: Build macOS
+        run: |
+          cd src
+          pyinstaller build_mac.spec
+          cd ..
+      
+      - name: Create release package
+        run: |
+          cd dist
+          zip -r Nightreign_Relic_Editor_macOS.zip Nightreign_Relic_Editor.app
+          sha256sum Nightreign_Relic_Editor_macOS.zip > Nightreign_Relic_Editor_macOS.zip.sha256
+          cd ..
+      
+      - name: Upload to release
+        uses: actions/upload-artifact@v3
+        with:
+          name: macos-release
+          path: |
+            dist/Nightreign_Relic_Editor_macOS.zip
+            dist/Nightreign_Relic_Editor_macOS.zip.sha256
+
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+      
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3.12-tk python3.12-dev libgtk-3-0
+          pip install uv
+          uv pip install -e .
+      
+      - name: Build Linux
+        run: |
+          cd src
+          python3 -m PyInstaller \
+            --onedir \
+            --windowed \
+            --name "Nightreign_Relic_Editor" \
+            --add-data "Resources:Resources" \
+            Final.py
+          cd ..
+      
+      - name: Create release package
+        run: |
+          cd dist
+          tar -czf Nightreign_Relic_Editor_Linux.tar.gz Nightreign_Relic_Editor/
+          sha256sum Nightreign_Relic_Editor_Linux.tar.gz > Nightreign_Relic_Editor_Linux.tar.gz.sha256
+          cd ..
+      
+      - name: Upload to release
+        uses: actions/upload-artifact@v3
+        with:
+          name: linux-release
+          path: |
+            dist/Nightreign_Relic_Editor_Linux.tar.gz
+            dist/Nightreign_Relic_Editor_Linux.tar.gz.sha256
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+      
+      - name: Install dependencies
+        run: |
+          pip install uv
+          uv pip install -e .
+      
+      - name: Build Windows
+        run: |
+          cd src
+          pyinstaller build_win64_onedir.spec
+          cd ..
+      
+      - name: Create release package
+        shell: powershell
+        run: |
+          cd dist
+          Compress-Archive -Path "Nightreign_Relic_Editor" -DestinationPath "Nightreign_Relic_Editor_Windows_64bit.zip"
+          certUtil -hashfile "Nightreign_Relic_Editor_Windows_64bit.zip" SHA256 | Out-File -FilePath "Nightreign_Relic_Editor_Windows_64bit.zip.sha256"
+          cd ..
+      
+      - name: Upload to release
+        uses: actions/upload-artifact@v3
+        with:
+          name: windows-release
+          path: |
+            dist/Nightreign_Relic_Editor_Windows_64bit.zip
+            dist/Nightreign_Relic_Editor_Windows_64bit.zip.sha256
+
+  create-release:
+    needs: [build-macos, build-linux, build-windows]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Download all artifacts
+        uses: actions/download-artifact@v3
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            macos-release/*
+            linux-release/*
+            windows-release/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
